@@ -6,3 +6,32 @@ body > .container {
 	padding-top: 50px;
 	margin-top: -50px;
 }
+
+.transWarning{
+        border-color:red;
+        background-color: #ff6e69;
+        color:#fff;
+    }
+    pre{
+        padding-left:35px;
+        position: relative;
+        text-align: left;
+        min-height: 15px;
+    }
+    pre strong{
+        background-color: #e4e4e4;
+        border-right:1px solid #ccc;
+        border-bottom:1px solid #ccc;
+        position: absolute;
+        top:0px;
+        left:0px;
+        padding:5px 5px;
+        display: inline-block;
+        font-size: 130%;
+        text-transform: capitalize;
+        border-radius: 0 0 6px 0;
+    }
+    .transWarning strong{
+        background-color: #ff0000;
+        border-color: #ff0000;
+    }
