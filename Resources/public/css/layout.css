@@ -23,7 +23,7 @@ textarea{
     color:#fff;
 }
 pre{
-    padding-left:35px;
+    padding-left:30px;
     position: relative;
     text-align: left;
     min-height: 15px;
@@ -37,7 +37,7 @@ pre strong{
     left:0px;
     padding:5px 5px;
     display: inline-block;
-    font-size: 130%;
+    font-size: 100%;
     text-transform: capitalize;
     border-radius: 0 0 6px 0;
 }
