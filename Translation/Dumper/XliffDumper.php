@@ -104,11 +104,9 @@ class XliffDumper implements DumperInterface
 
             $unit->appendChild($target = $doc->createElement('target'));
             if (preg_match('/[<>&]/', $message->getLocaleString())) {
-                $target->appendChild($doc->createCDATASection(""));
-//                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
+                $target->appendChild($doc->createCDATASection($message->getLocaleString()));
             } else {
-                $target->appendChild($doc->createTextNode(""));
-//                $target->appendChild($doc->createTextNode($message->getLocaleString()));
+                $target->appendChild($doc->createTextNode($message->getLocaleString()));
             }
 
             if ($message->isNew()) {
