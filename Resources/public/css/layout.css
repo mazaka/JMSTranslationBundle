@@ -1,10 +1,10 @@
 body > .container {
-	margin-top: 50px;
+    margin-top: 50px;
 }
 
 .jms-translation-anchor {
-	padding-top: 50px;
-	margin-top: -50px;
+    padding-top: 50px;
+    margin-top: -50px;
 }
 
 td{
@@ -14,8 +14,7 @@ td{
 textarea{
     border:0;
     box-shadow: 0 0 0;
-    min-height: 100px;
-    margin-left:20px;
+    min-height: 120px;
 }
 
 .transWarning{
@@ -53,10 +52,10 @@ pre strong{
     border-bottom:1px solid #ccc;
     position: absolute;
     top:0px;
-    left:0px;
-    padding:5px 5px;
+    right:0px;
+    padding:4px;
     display: inline-block;
-    font-size: 130%;
+    font-size: 100%;
     text-transform: capitalize;
-    border-radius: 0 0 6px 0;
+    border-radius: 0 0 0 6px;
 }
