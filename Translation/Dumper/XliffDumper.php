@@ -111,7 +111,7 @@ class XliffDumper implements DumperInterface
                 }
             }
 
-            if ($message->isNew()) {
+            if ($message->isNew() || $message->getLocaleString() == $message->getSourceString() || strlen(trim($message->getSourceString()) == 0) ) {
                 $target->setAttribute('state', 'new');
             }
 
