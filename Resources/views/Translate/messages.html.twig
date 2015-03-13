@@ -18,7 +18,7 @@
                 </td>
                 <td>
 
-                    <textarea data-id="{{ id }}" class="span7"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{% if id != message.localeString %}{{ message.localeString }}{% endif %}</textarea></td>
+                    <textarea data-id="{{ id }}" {% if isWriteable is sameas(false) %} readonly="readonly"{% endif %}>{% if id != message.localeString %}{{ message.localeString }}{% endif %}</textarea></td>
                 <td>
                     {% if message.meaning is not empty %}
                         <h6>Meaning</h6>
