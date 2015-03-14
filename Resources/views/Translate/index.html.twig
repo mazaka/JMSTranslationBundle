@@ -5,6 +5,13 @@
     
     <script language="javascript" type="text/javascript">
         $(document).ready(function() {
+
+            $('a.stat').click(function(){
+                var config = $(this).attr('data-config');
+                $('.ul-'+config).toggleClass('hide');
+            });
+
+
             var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
         
             $('#config select').change(function() {
@@ -52,6 +59,9 @@
 
 {% block body %}
 
+
+
+
     <form id="config" class="form-horizontal" action="{{ path("jms_translation_index") }}" method="get" style="margin-top:50px">
         <select name="config" class="span3">
             {% for config in configs %}
@@ -72,6 +82,24 @@
         </select>
     </form>
 
+    <div class="">
+        {% for config, domains in stats %}
+            <div>
+                <a href="javascript:;" class="stat" data-config="{{ config }}">{{ config }}</a>
+                {% set counter = 0 %}
+                {% for domain, messages in domains %}
+                    {% set counter = counter + messages|length %}
+                {% endfor %}
+                <span class="label">{{ counter }}</span>
+                <ul class="hide ul-{{ config }}">
+                    {% for domain, messages in domains %}
+                        <li>{{ domain }} <span class="label">{{ messages|length }}</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
     {% if isWriteable is sameas(false) %}
     <div class="alert-message error">
         The translation file "<strong>{{ file }}</strong>" is not writable.
@@ -90,13 +118,20 @@
     {% endif %}
 
 
+
+
+
     {% if newMessages is not empty %}
-    <h3>New Messages ({{ newMessages|length }})</h3>
+        <div class="well">
+            <h3>New Messages ({{ newMessages|length }})</h3>
+        </div>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": newMessages} %}
     {% endif %}
     
     {% if existingMessages is not empty %}
-    <h3>Existing Messages ({{ existingMessages|length }})</h3>
+        <div class="well">
+            <h3>Existing Messages ({{ existingMessages|length }})</h3>
+        </div>
     {% include "JMSTranslationBundle:Translate:messages.html.twig" with {"messages": existingMessages} %}
     {% endif %}
 
