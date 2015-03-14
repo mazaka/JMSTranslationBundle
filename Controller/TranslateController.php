@@ -61,20 +61,23 @@ class TranslateController
             throw new RuntimeException('You need to configure at least one config under "jms_translation.configs".');
         }
 
+
         $translationsDir = $this->configFactory->getConfig($config, 'en')->getTranslationsDir();
         $files = FileUtils::findTranslationFiles($translationsDir);
         if (empty($files)) {
             throw new RuntimeException('There are no translation files for this config, please run the translation:extract command first.');
         }
 
+
         $domains = array_keys($files);
+
         $domain = $this->request->query->get('domain') ?: reset($domains);
         if ((!$domain = $this->request->query->get('domain')) || !isset($files[$domain])) {
             $domain = reset($domains);
         }
 
         $locales = array_keys($files[$domain]);
-        
+
         natsort($locales);
         
         if ((!$locale = $this->request->query->get('locale')) || !isset($files[$domain][$locale])) {
@@ -108,17 +111,33 @@ class TranslateController
             }
         }
 
+
         $newMessages = $existingMessages = array();
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
-            if ($message->isNew()) {
+            if ($message->isNew() ) {
                 $newMessages[$id] = $message;
+
+                if( isset($alternativeMessages[str_replace('.untranslated','',$id)]) ){
+                    $alternativeMessages[$id] = $alternativeMessages[str_replace('.untranslated','',$id)];
+                }
+
                 continue;
+            }
+
+            if( isset($alternativeMessages[$id.'.untranslated']) ){
+                $locals = $alternativeMessages[$id.'.untranslated'];
+                $alternativeMessages[$id] = $locals;
+                unset($alternativeMessages[$id.'.untranslated']);
             }
 
             $existingMessages[$id] = $message;
         }
 
+        $stats = $this->getStats($configs, $locale);
+
+
         return array(
+            'stats' => $stats,
             'selectedConfig' => $config,
             'configs' => $configs,
             'selectedDomain' => $domain,
@@ -134,4 +153,41 @@ class TranslateController
             'sourceLanguage' => $this->sourceLanguage,
         );
     }
+
+
+    private function getStats($configs, $selectedLocale){
+
+        $newMessages = array();
+        foreach($configs as $config){
+            $translationsDir = $this->configFactory->getConfig($config, 'en')->getTranslationsDir();
+            $files = FileUtils::findTranslationFiles($translationsDir);
+            if ( !empty($files)) {
+
+                $domains = array_keys($files);
+
+                foreach($domains as $domain){
+                    if ((!$domain = $this->request->query->get('domain')) || !isset($files[$domain])) {
+                        $domain = reset($domains);
+                    }
+
+                    $catalogue = $this->loader->loadFile(
+                        $files[$domain][$selectedLocale][1]->getPathName(),
+                        $files[$domain][$selectedLocale][0],
+                        $selectedLocale,
+                        $domain
+                    );
+
+                    foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
+                        if ( $message->isNew() ) {
+                            $newMessages[$config][$domain][$id] = $id;
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $newMessages;
+    }
+
 }
