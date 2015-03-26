@@ -77,6 +77,7 @@ class TranslateController
         }
 
         $locales = array_keys($files[$domain]);
+        $locales = $this->container->getParameter('lunetics_locale.allowed_locales');
 
         natsort($locales);
         
@@ -117,24 +118,37 @@ class TranslateController
             if ($message->isNew() ) {
                 $newMessages[$id] = $message;
 
-                if( isset($alternativeMessages[str_replace('.untranslated','',$id)]) ){
-                    $alternativeMessages[$id] = $alternativeMessages[str_replace('.untranslated','',$id)];
+                $alts = array();
+                if ( isset($alternativeMessages[str_replace('.untranslated','',$id)]) ){
+                    $alts = array_merge($alts, $alternativeMessages[str_replace('.untranslated','',$id)]);
+                }
+                if ( isset($alternativeMessages[str_replace('.untranslated','',$id).'.untranslated']) ) {
+                    $alts = array_merge($alts, $alternativeMessages[str_replace('.untranslated','',$id).'.untranslated']);
+                }
+                if ( count($alts) ) {
+                    dump($alts);
+                    $alternativeMessages[$id] = $alts;
                 }
 
                 continue;
             }
 
-            if( isset($alternativeMessages[$id.'.untranslated']) ){
-                $locals = $alternativeMessages[$id.'.untranslated'];
-                $alternativeMessages[$id] = $locals;
+            $locals = array();
+            if ( isset($alternativeMessages[$id.'.untranslated']) ) {
+                $locals = array_merge($locals, $alternativeMessages[$id.'.untranslated']);
                 unset($alternativeMessages[$id.'.untranslated']);
+            }
+            if (isset($alternativeMessages[$id])) {
+                $locals = array_merge($locals, $alternativeMessages[$id]);
+            }
+            if (count($locals)) {
+                $alternativeMessages[$id] = $locals;
             }
 
             $existingMessages[$id] = $message;
         }
 
         $stats = $this->getStats($configs, $locale);
-
 
         return array(
             'stats' => $stats,
