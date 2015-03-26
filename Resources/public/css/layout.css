@@ -46,6 +46,12 @@ pre strong{
     background-color: #ff0000;
     border-color: #ff0000;
 }
+pre a{
+    color:#333;
+}
+.transWarning a{
+    color:#fff;
+}
 
 .currentLocalTextarea{
     background-color: #e4e4e4;
