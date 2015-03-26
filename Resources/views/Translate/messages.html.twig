@@ -12,7 +12,7 @@
             <tr>
                 <td>
                     <a class="jms-translation-anchor" id="{{ id }}" />
-                    <abbr title="{{ id }}">{{ id }}</abbr>
+                    <abbr id="{{ id }}" title="{{ id }}">{{ id }}</abbr>
                     </a>
                     <strong class="currentLocalTextarea">{{ selectedLocale }}</strong>
                 </td>
@@ -28,7 +28,11 @@
                     {% if alternativeMessages[id] is defined %}
                         {% for locale, altMessage in alternativeMessages[id] %}
                         <p>
-                            <pre class="{% if message.localeString == altMessage.localeString or altMessage.localeString|length == 0 %}transWarning{% endif %}"><strong><a href="{{ app.request.uri }}&locale={{ locale }}">{{ locale }}</a></strong>{{ altMessage.localeString }}</pre>
+                            {% set untransClass = '' %}
+                            {% if message.localeString == altMessage.localeString or altMessage.localeString|length == 0 %}
+                                {% set untransClass = 'transWarning' %}
+                            {% endif %}
+                            <pre class="{{ untransClass }}"><strong><a href="{{ app.request.uri }}&locale={{ locale }}#{% if untransClass == '' %}{{ id }}{% else %}{{ id|replace({'.untranslated': ''}) }}.untranslated{% endif %}">{{ locale }}</a></strong>{{ altMessage.localeString }}</pre>
                         </p>
                         {% endfor %}
                     {% endif %}
