@@ -28,7 +28,7 @@
                     {% if alternativeMessages[id] is defined %}
                         {% for locale, altMessage in alternativeMessages[id] %}
                         <p>
-                            <pre class="{% if message.localeString == altMessage.localeString or altMessage.localeString|length == 0 %}transWarning{% endif %}"><strong>{{ locale }}</strong>{{ altMessage.localeString }}</pre>
+                            <pre class="{% if message.localeString == altMessage.localeString or altMessage.localeString|length == 0 %}transWarning{% endif %}"><strong><a href="{{ app.request.uri }}&locale={{ locale }}">{{ locale }}</a></strong>{{ altMessage.localeString }}</pre>
                         </p>
                         {% endfor %}
                     {% endif %}
