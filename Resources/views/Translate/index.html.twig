@@ -32,7 +32,7 @@
                         success: function() {
                             var id = $(self).data('id');
                             if (id.indexOf(".untranslated") > -1) {
-                                $(self).attr(id.substr(0, id.length-13));
+                                $(self).attr('data-id', id.substr(0, id.length-13));
                             }
                             $(self).parent().prev().append('<div class="alert-message success">Translation was saved.</div>');
                         },
