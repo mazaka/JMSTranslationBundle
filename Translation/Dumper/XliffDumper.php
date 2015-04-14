@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation\Dumper;
 
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\JMSTranslationBundle;
+use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 
 /**
@@ -32,7 +33,7 @@ use JMS\TranslationBundle\Model\MessageCatalogue;
  */
 class XliffDumper implements DumperInterface
 {
-    private $sourceLanguage = 'en';
+    private $sourceLanguage = 'de';
     private $addDate = true;
 
     /**
@@ -90,6 +91,9 @@ class XliffDumper implements DumperInterface
 
         $file->appendChild($body = $doc->createElement('body'));
 
+        /**
+         * @var Message $message
+         */
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
             $body->appendChild($unit = $doc->createElement('trans-unit'));
 
@@ -105,16 +109,22 @@ class XliffDumper implements DumperInterface
             if (preg_match('/[<>&]/', $message->getLocaleString())) {
                 $target->appendChild($doc->createCDATASection($message->getLocaleString()));
             } else {
-                if( $message->getLocaleString() != $message->getSourceString() ){
-                    $target->appendChild($doc->createTextNode($message->getLocaleString()));
+                if( $catalogue->getLocale() == "de" && $message->isNew() ) {
+                    $target->appendChild($doc->createTextNode($message->getDesc()));
+                }
+                else {
+                    $localeStr = $message->getLocaleString();
+                    $sourceStr = $message->getSourceString();
+                    $target->appendChild($doc->createTextNode($localeStr));
                 }
             }
 
-            if ($message->isNew() ) {
+            if ($message->isNew()) {
                 $target->setAttribute('state', 'new');
             }
 
-            if ($message->isNew() ) {
+            // added
+            if ($message->isNew()) {
                 $id = str_replace('.untranslated','', $id);
                 $id = $id.'.untranslated';
             }else{
